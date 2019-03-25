@@ -1,7 +1,7 @@
 object proyecto_graf: Tproyecto_graf
-  Left = 231
+  Left = 319
   Height = 450
-  Top = 193
+  Top = 187
   Width = 650
   BorderStyle = bsSingle
   Caption = 'proyecto_graf'

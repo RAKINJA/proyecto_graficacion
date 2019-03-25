@@ -92,6 +92,7 @@ type
     procedure graficarLineaBresenham (x1,y1,x2,y2 : integer);
 
     procedure graficarRectangulo (x1,y1,x2,y2 : integer);     // Rectangulo / Cuadrado
+    procedure graficarCirculo(x1,y1,x2,y2 : integer);
   end;
 
 var
@@ -282,25 +283,28 @@ end;
 
 procedure Tproyecto_graf.boton_elipseClick(Sender: TObject);
 begin
-     valorOpcion := 3;
+     valorOpcion := 4;
 
      contadorClicks     := 0;
-     cantidadCoorFigura := 1;
+     cantidadCoorFigura := 3;
 end;
 
 procedure Tproyecto_graf.boton_polilineaClick(Sender: TObject);
 begin
-     valorOpcion    := 4;
+     valorOpcion    := 5;
      contadorClicks := 0;
 end;
 
 procedure Tproyecto_graf.boton_reflejoClick(Sender: TObject);
 begin
-     valorOpcion    := 5;
+     valorOpcion    := 6;
      contadorClicks := 0;
 end;
 {  ---------- FUNCIONES PARA EL GRAFICADO DE LINEAS Y POLIGONOS --------- }
 
+{
+   Funcion que grafica una linea con el Algoritmo de DDA
+}
 procedure Tproyecto_graf.graficarLineaDDA(x1,y1,x2,y2 : integer);
 var
    dx, dy, pasos, x, y, k: integer;
@@ -331,8 +335,11 @@ begin
           x := Round(xaux);
           y := Round(yaux);
      end;
-end;
+end;   // FUNCION DDA
 
+{
+ 	   Funcion que grafica una linea con el Algoritmo de Bresenham
+}
 procedure Tproyecto_graf.graficarLineaBresenham (x1,y1,x2,y2 : integer);
 var
    aux_dx, aux_dy, dx, dy, pk, next_pk, x, y, next_y, next_x : integer;
@@ -350,11 +357,6 @@ begin
      pk      := 0;
      next_pk := 0;
      m       := 0;
-
-     {showmessage(inttostr(x1));
-     showmessage(inttostr(y1));
-     showmessage(inttostr(x2));
-     showmessage(inttostr(y2));}
 
         if dx = 0 then begin // si no hay desplazamiento horizontal
            incx := 0;
@@ -428,8 +430,11 @@ begin
                pk := next_pk;
           end;
      end;
-end;
+end;  // FUNCION BRESENHAM
 
+{
+ 	Funcion para graficar el rectangulo
+}
 procedure Tproyecto_graf.graficarRectangulo(x1, y1, x2, y2: integer);
 begin
      graficarLineaDDA(x1,y1,x2,y1);
@@ -437,9 +442,74 @@ begin
 
      graficarLineaDDA(x2,y1,x2,y2);
      graficarLineaDDA(x1,y2,x2,y2);
-end;
+end; // FUNCION RECTANGULO
+
+{
+ 	 Funcion que grafica un Circulo
+}
+procedure Tproyecto_graf.graficarCirculo(x1,y1,x2,y2 : integer);
+var
+   DP, dx, dy, m: real;
+   radio, x,y : integer;
+begin
+     dx := abs(x2-x1);
+     dy := abs(y2-y1);
+
+     // Encontra el Radio
+     radio := round(sqrt( (dx*dx) + (dy*dy) ));
+     showmessage('radio = '+inttostr(radio));
+
+     // Calcular punto de desicion
+     DP := 1.25-radio;
+
+     x := x1;
+     if y2 > y1 then begin
+        y := y1 - radio;
+     end else begin
+        y := y1 +radio;
+     end;
+
+     //y := y1+radio;
+
+     m := 2;
+
+     showmessage('X1 = '+inttostr(x)+ ' | Y1 = '+inttostr(y));
+
+     while m >= 0   do begin
+
+           grafico.Canvas.Pixels[x,y] := pluma.Color;
+           grafico.Canvas.Pixels[y-radio,x+radio] := pluma.Color;
+           {grafico.Canvas.Pixels[y*(-1),x] := pluma.Color;
+           grafico.Canvas.Pixels[(-1)*x,y] := pluma.Color;
+           grafico.Canvas.Pixels[-x,-y] := pluma.Color;
+           grafico.Canvas.Pixels[-y,-x] := pluma.Color;
+           grafico.Canvas.Pixels[y,-x] := pluma.Color;
+           grafico.Canvas.Pixels[x,-y] := pluma.Color; }
+
+
+           showmessage('x = '+inttostr(x)+ ' | y = '+inttostr(y));
+           showmessage('M = '+floattostr(m));
+           //showmessage('DP = '+floattostr(DP));
+     	   if DP < 0 then begin
+           	  x := x +1;
+              y := y;
+              DP := DP + (2*x) +3;
+           end else begin
+              x := x+1;
+              y := y-1;
+              DP := DP + (2*x) - (2*y) +5 ;
+           end;
+
+           m := (y-y1) / (x - x1);
+  	 end;
+end;  // FUNCION CIRCULO
+
+
+
 
 {  ---------- PROCEDIMIENTOS PARA EL MANEJO DE ESTRUCTURAS --------- }
+
+
 
 { ##### ARREGLO DE FIGURAS CREADAS GLOBALES #####}
 
@@ -500,11 +570,19 @@ begin
               end;
 
               2: begin // GRAFICACION DEL RECTANGULO
-                  if ( x1 = x2 ) or ( y1 = y2 ) then begin // Si algun punto en horizontal o vertical es lo mismo, se dibuja una lina
+                  if ( x1 = x2 ) or ( y1 = y2 ) then begin // Si algun punto en horizontal o vertical es lo mismo, se dibuja una linea
                      graficarLineaDDA( x1, y1, x2, y2 );
                   end else begin                           // Si no se grafica un rectangulo normal
                      graficarRectangulo(x1, y1, x2, y2 );
                   end; {-- fin rectangulo --}
+              end;
+
+              3: begin // GRAFICACION DL CIRCULO
+              	 if ( x1 = x2 ) or ( y1 = y2 ) then begin // Si algun punto en horizontal o vertical es lo mismo, se dibuja una linea
+                     graficarLineaDDA( x1, y1, x2, y2 );
+                  end else begin                           // Si no se grafica un circulo normal
+                     graficarCirculo(x1, y1, x2, y2 );
+                  end; {-- fin circulo --}
               end;
          end;
      end;
