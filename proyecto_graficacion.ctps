@@ -11,7 +11,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="21"/>
-        <UsageCount Value="77"/>
+        <UsageCount Value="84"/>
       </Unit0>
       <Unit1>
         <Filename Value="codigograf.pas"/>
@@ -22,9 +22,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="codigoGraf"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="465"/>
-        <CursorPos X="16" Y="478"/>
-        <UsageCount Value="77"/>
+        <TopLine Value="235"/>
+        <CursorPos Y="250"/>
+        <UsageCount Value="84"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -35,7 +35,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="808"/>
         <CursorPos X="22" Y="797"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
       </Unit2>
       <Unit3>
         <Filename Value="C:\codetyphon\typhon\lcl\controls.pp"/>
@@ -44,7 +44,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="1476"/>
         <CursorPos X="25" Y="1491"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
       </Unit3>
       <Unit4>
         <Filename Value="C:\codetyphon\typhon\lcl\include\control.inc"/>
@@ -52,17 +52,58 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="1779"/>
         <CursorPos X="19" Y="1802"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit4>
       <Unit5>
         <Filename Value="codigograf.frm"/>
         <FRMtype Value="0"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
         <DefaultSyntaxHighlighter Value="FRM"/>
       </Unit5>
     </Units>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory Count="10" HistoryIndex="9">
+      <Position1>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="495" Column="33" TopLine="466"/>
+      </Position1>
+      <Position2>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="514" Column="40" TopLine="483"/>
+      </Position2>
+      <Position3>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="504" Column="42" TopLine="485"/>
+      </Position3>
+      <Position4>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="513" Column="34" TopLine="494"/>
+      </Position4>
+      <Position5>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="522" Column="31" TopLine="494"/>
+      </Position5>
+      <Position6>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="88" Column="26" TopLine="68"/>
+      </Position6>
+      <Position7>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="102" Column="48" TopLine="70"/>
+      </Position7>
+      <Position8>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="88" Column="25" TopLine="81"/>
+      </Position8>
+      <Position9>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="612" Column="6" TopLine="586"/>
+      </Position9>
+      <Position10>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="519" Column="25" TopLine="83"/>
+      </Position10>
+    </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes Count="0" ActiveMode=""/>

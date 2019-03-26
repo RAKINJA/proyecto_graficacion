@@ -88,11 +88,15 @@ type
     procedure agregarFiguraLista( figuraNueva : figura);
 
     // Procedimientos para Figuras
-    procedure graficarLineaDDA (x1,y1,x2,y2 : integer);       // Linea
-    procedure graficarLineaBresenham (x1,y1,x2,y2 : integer);
+    procedure graficarLineaDDA (x1,y1,x2,y2 : integer);       // Linea DDA
+    procedure graficarLineaBresenham (x1,y1,x2,y2 : integer); // Linea Bresenham
 
     procedure graficarRectangulo (x1,y1,x2,y2 : integer);     // Rectangulo / Cuadrado
-    procedure graficarCirculo(x1,y1,x2,y2 : integer);
+
+    procedure graficarCirculo(x1,y1,x2,y2 : integer);                // Circulo
+    procedure graficarOctantes(xk, yk, centroX, centroY : integer ); // Octantes Circulo
+
+    procedure graficarElipse(x1,y1,x2,y2,xc,yc : integer);  // Graficar Elipse
   end;
 
 var
@@ -243,8 +247,7 @@ procedure Tproyecto_graf.opcion_importarClick(Sender: TObject);
 begin
      if dialogo_imagen.Execute then begin
         imagen_actual.LoadFromFile(dialogo_imagen.FileName);
-        showmessage(inttostr( 4));
-        showmessage(inttostr(dialogo_imagen.Height));
+
         if dialogo_imagen.Width > grafico.Width then begin
            grafico.width := imagen_actual.Width;
         end;
@@ -449,63 +452,73 @@ end; // FUNCION RECTANGULO
 }
 procedure Tproyecto_graf.graficarCirculo(x1,y1,x2,y2 : integer);
 var
-   DP, dx, dy, m: real;
-   radio, x,y : integer;
+   DP, dx, dy: real;
+   radio, x, y : integer;
 begin
+
      dx := abs(x2-x1);
      dy := abs(y2-y1);
 
      // Encontra el Radio
      radio := round(sqrt( (dx*dx) + (dy*dy) ));
-     showmessage('radio = '+inttostr(radio));
 
      // Calcular punto de desicion
      DP := 1.25-radio;
 
-     x := x1;
-     if y2 > y1 then begin
-        y := y1 - radio;
-     end else begin
-        y := y1 +radio;
-     end;
+     x :=0;
+     y :=radio;
 
-     //y := y1+radio;
+     grafico.Canvas.Pixels[x,y] := pluma.Color;
+     while y >= x   do begin
 
-     m := 2;
+           // Se llamará a un procedimiento para graficar el punto en los diferentes octantes del circulo, en ese nuevo centro dado por el usuario
+           graficarOctantes(x,y,x1,y1);
 
-     showmessage('X1 = '+inttostr(x)+ ' | Y1 = '+inttostr(y));
-
-     while m >= 0   do begin
-
-           grafico.Canvas.Pixels[x,y] := pluma.Color;
-           grafico.Canvas.Pixels[y-radio,x+radio] := pluma.Color;
-           {grafico.Canvas.Pixels[y*(-1),x] := pluma.Color;
-           grafico.Canvas.Pixels[(-1)*x,y] := pluma.Color;
-           grafico.Canvas.Pixels[-x,-y] := pluma.Color;
-           grafico.Canvas.Pixels[-y,-x] := pluma.Color;
-           grafico.Canvas.Pixels[y,-x] := pluma.Color;
-           grafico.Canvas.Pixels[x,-y] := pluma.Color; }
-
-
-           showmessage('x = '+inttostr(x)+ ' | y = '+inttostr(y));
-           showmessage('M = '+floattostr(m));
-           //showmessage('DP = '+floattostr(DP));
      	   if DP < 0 then begin
            	  x := x +1;
               y := y;
-              DP := DP + (2*x) +3;
+              DP := DP + (2*x) + 3;
            end else begin
               x := x+1;
               y := y-1;
-              DP := DP + (2*x) - (2*y) +5 ;
+              DP := DP + 2*(x-y) +5;
            end;
-
-           m := (y-y1) / (x - x1);
   	 end;
 end;  // FUNCION CIRCULO
 
+{
+ 	  Funcion que calcula los puntos en los octantes
+}
+procedure Tproyecto_graf.graficarOctantes(xk, yk, centroX, centroY : integer );
+var
+        posX, posY, negX, negY : integer;
+begin
 
 
+     posX := xk;
+     posY := yk;
+     negX := -xk;
+     negY := -yk;
+
+     grafico.Canvas.Pixels[posX +centroX,posY+centroY] := pluma.Color;
+     grafico.Canvas.Pixels[posY +centroX,posX+centroY] := pluma.Color;
+     grafico.Canvas.Pixels[posY +centroX,negX+centroY] := pluma.Color;
+     grafico.Canvas.Pixels[posX +centroX,negY+centroY] := pluma.Color;
+
+     grafico.Canvas.Pixels[negX +centroX,negY+centroY] := pluma.Color;
+     grafico.Canvas.Pixels[negY +centroX,negX+centroY] := pluma.Color;
+     grafico.Canvas.Pixels[negY +centroX,posX+centroY] := pluma.Color;
+     grafico.Canvas.Pixels[negX +centroX,posY+centroY] := pluma.Color;
+
+end; // FIN GRAFICAR OCTANTES
+
+{
+ 	 Funcion para graficar una elipse
+}
+procedure Tproyecto_graf.graficarElipse(x1,y1,x2,y2,xc,yc : integer);
+begin
+
+end; // FUN GRAFICAR ELIPSE
 
 {  ---------- PROCEDIMIENTOS PARA EL MANEJO DE ESTRUCTURAS --------- }
 
