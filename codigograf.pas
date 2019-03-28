@@ -84,7 +84,7 @@ type
     {
         Procedimientos para Estructuras
     }
-    procedure graficarFigura(  cantPuntos : integer; figura : figura  );
+    procedure graficarFigura(  figura : figura  );
     procedure agregarFiguraLista( figuraNueva : figura);
 
     // Procedimientos para Figuras
@@ -134,8 +134,7 @@ begin
      valorOpcion     := 1;
      activoDDA       := true;
      contadorFiguras := 0;
-     imagen_actual := grafico.Picture.Create;
-
+     imagen_actual := nil;//grafico.Picture.Create;
 
      // Ancho y alto predefinido del Formulario
      proyecto_graf.Height := 470;
@@ -178,10 +177,11 @@ begin
            // Reseteo de variables
            contadorClicks := -1;
 
-           contadorFiguras := contadorFiguras + 1;
            figuraAux := crearFigura( valorOpcion, cantidadCoorFigura ); // Creado de la figura
+           contadorFiguras := contadorFiguras + 1;
+
            agregarFiguraLista( figuraAux );
-           graficarFigura( cantidadCoorFigura, figuraAux  );
+           graficarFigura( figuraAux );
 
         end;
 
@@ -220,16 +220,25 @@ begin
      grafico.canvas.Pen.Color:=Clblack;
      grafico.Canvas.Rectangle(0,0,grafico.Width,grafico.Height);
 
-     {if imagen_actual. <> '' then begin
-        imagen_actual.LoadFromFile(imagen_actual.GetNamePath);
-     end;}
+     if not imagen_actual.Graphic.Empty then begin
+        //showmessage('imagen limpia');
+        imagen_actual.LoadFromFile( grafico.Picture.Graphic.GetNamePath );
+     end;
 
      // Recorrer los elementos y repintar
-     for i:= 0 to contadorFiguras-1 do begin
+     for i:=0 to contadorFiguras-1 do begin
          if i=lista_elementos.ItemIndex then begin
-            grafico.Canvas.Pen.color := Clred;
 
+            grafico.Canvas.Pen.color := Clred; // Color de la figura de enfoque
+
+            // llamada a la funcion de pintar la figura
+            graficarFigura( figurasCreadas[i] );
+            continue;
+         end else begin
+             grafico.Canvas.Pen.color := figurasCreadas[i].color;
+			 graficarFigura( figurasCreadas[i] );
          end;
+
      end;
 end;
 
@@ -245,6 +254,8 @@ end;
 
 procedure Tproyecto_graf.opcion_importarClick(Sender: TObject);
 begin
+     imagen_actual := grafico.Picture.Create;
+
      if dialogo_imagen.Execute then begin
         imagen_actual.LoadFromFile(dialogo_imagen.FileName);
 
@@ -533,7 +544,7 @@ function Tproyecto_graf.crearFigura( tipo, cantPuntos : integer ): figura;
 var
    figuraAux : figura;
    coorAux : TCoordenada;
-   i : integer;
+   i, tam : integer;
 begin
 
      figuraAux.tipo   := tipo;
@@ -550,15 +561,22 @@ begin
          Setlength(figuraAux.Coordenadas, i+1 );
          figuraAux.Coordenadas[i] := coorAux;
      end;
-     crearFigura := figuraAux;
 
+
+     SetLength(figurasCreadas, contadorFiguras+1 );
+     //showmessage('contadorFiguras ='+inttostr(contadorFiguras));
+     figurasCreadas[contadorFiguras] := figuraAux;;
+
+     showmessage('tamaño del arreglo '+inttostr(contadorFiguras));
+
+     crearFigura := figuraAux;
 end;
 
 
 {
     Procedimiento para Graficar las figuras
 }
-procedure Tproyecto_graf.graficarFigura(  cantPuntos : integer; figura : figura  );
+procedure Tproyecto_graf.graficarFigura( figura : figura  );
 var
    i : integer;
    x1,y1,x2,y2 : integer;

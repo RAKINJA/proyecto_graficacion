@@ -11,7 +11,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="21"/>
-        <UsageCount Value="84"/>
+        <UsageCount Value="90"/>
       </Unit0>
       <Unit1>
         <Filename Value="codigograf.pas"/>
@@ -22,9 +22,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="codigoGraf"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="235"/>
-        <CursorPos Y="250"/>
-        <UsageCount Value="84"/>
+        <TopLine Value="204"/>
+        <CursorPos X="9" Y="225"/>
+        <UsageCount Value="90"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -62,7 +62,7 @@
         <DefaultSyntaxHighlighter Value="FRM"/>
       </Unit5>
     </Units>
-    <JumpHistory Count="10" HistoryIndex="9">
+    <JumpHistory Count="20" HistoryIndex="19">
       <Position1>
         <Filename Value="codigograf.pas"/>
         <Caret Line="495" Column="33" TopLine="466"/>
@@ -103,6 +103,46 @@
         <Filename Value="codigograf.pas"/>
         <Caret Line="519" Column="25" TopLine="83"/>
       </Position10>
+      <Position11>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="570" Column="46" TopLine="563"/>
+      </Position11>
+      <Position12>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="563" Column="26" TopLine="544"/>
+      </Position12>
+      <Position13>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="87" Column="32" TopLine="69"/>
+      </Position13>
+      <Position14>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="238" Column="15" TopLine="214"/>
+      </Position14>
+      <Position15>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="234" Column="57" TopLine="214"/>
+      </Position15>
+      <Position16>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="183" Column="30" TopLine="155"/>
+      </Position16>
+      <Position17>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="88" Column="33" TopLine="70"/>
+      </Position17>
+      <Position18>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="223" Column="22" TopLine="204"/>
+      </Position18>
+      <Position19>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="137" Column="27" TopLine="104"/>
+      </Position19>
+      <Position20>
+        <Filename Value="codigograf.pas"/>
+        <Caret Line="223" Column="40" TopLine="204"/>
+      </Position20>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
