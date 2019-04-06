@@ -133,7 +133,6 @@ begin
      contadorFiguras := 0;
      valorOpcion     := 1;
      activoDDA       := true;
-     contadorFiguras := 0;
      imagen_actual := nil;//grafico.Picture.Create;
 
      // Ancho y alto predefinido del Formulario
@@ -178,11 +177,10 @@ begin
            contadorClicks := -1;
 
            figuraAux := crearFigura( valorOpcion, cantidadCoorFigura ); // Creado de la figura
-           contadorFiguras := contadorFiguras + 1;
-
            agregarFiguraLista( figuraAux );
            graficarFigura( figuraAux );
 
+           contadorFiguras := contadorFiguras + 1;
         end;
 
      end;
@@ -220,25 +218,23 @@ begin
      grafico.canvas.Pen.Color:=Clblack;
      grafico.Canvas.Rectangle(0,0,grafico.Width,grafico.Height);
 
-     if not imagen_actual.Graphic.Empty then begin
-        //showmessage('imagen limpia');
-        imagen_actual.LoadFromFile( grafico.Picture.Graphic.GetNamePath );
-     end;
+     // Verificacion respecto a la existencia de una imagen
+     {if imagen_actual.GetNamePath <> '' then begin
+        //imagen_actual.LoadFromFile( imagen_actual.GetNamePath );
+     end;}
 
      // Recorrer los elementos y repintar
      for i:=0 to contadorFiguras-1 do begin
          if i=lista_elementos.ItemIndex then begin
 
             grafico.Canvas.Pen.color := Clred; // Color de la figura de enfoque
-
             // llamada a la funcion de pintar la figura
             graficarFigura( figurasCreadas[i] );
             continue;
          end else begin
              grafico.Canvas.Pen.color := figurasCreadas[i].color;
-			 graficarFigura( figurasCreadas[i] );
+	     graficarFigura( figurasCreadas[i] );
          end;
-
      end;
 end;
 
@@ -564,10 +560,7 @@ begin
 
 
      SetLength(figurasCreadas, contadorFiguras+1 );
-     //showmessage('contadorFiguras ='+inttostr(contadorFiguras));
-     figurasCreadas[contadorFiguras] := figuraAux;;
-
-     showmessage('tamaño del arreglo '+inttostr(contadorFiguras));
+     figurasCreadas[contadorFiguras] := figuraAux;
 
      crearFigura := figuraAux;
 end;
