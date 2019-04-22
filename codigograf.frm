@@ -1,11 +1,12 @@
 object proyecto_graf: Tproyecto_graf
-  Left = 316
-  Height = 450
-  Top = 174
+  Left = 364
+  Height = 449
+  Top = 185
   Width = 650
+  BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'proyecto_graf'
-  ClientHeight = 430
+  ClientHeight = 429
   ClientWidth = 650
   Color = 15263976
   Menu = menu_primario
@@ -73,6 +74,7 @@ object proyecto_graf: Tproyecto_graf
     Width = 100
     ItemHeight = 0
     OnClick = lista_elementosClick
+    OnDblClick = lista_elementosDblClick
     TabOrder = 1
   end
   object Label1: TLabel
@@ -101,7 +103,6 @@ object proyecto_graf: Tproyecto_graf
       AutoSize = True
       DragCursor = crDefault
       OnMouseDown = graficoMouseDown
-      OnPaint = graficoPaint
       ParentShowHint = False
       Stretch = True
     end
@@ -1041,13 +1042,10 @@ object proyecto_graf: Tproyecto_graf
   object menu_primario: TMainMenu
     Left = 464
     Top = 224
-    object menu1: TMenuItem
+    object menu_archivo: TMenuItem
       Caption = 'Archivo'
       object menu_abrir: TMenuItem
         Caption = 'Abrir'
-        object opcion_nuevo: TMenuItem
-          Caption = 'Imagen (Nuevo)'
-        end
         object opcion_editable: TMenuItem
           Caption = 'Editable'
         end
@@ -1058,10 +1056,12 @@ object proyecto_graf: Tproyecto_graf
       end
       object opcion_guardar: TMenuItem
         Caption = 'Guardar'
+        OnClick = opcion_guardarClick
       end
     end
     object menu_alg: TMenuItem
       Caption = 'Algoritmos'
+      OnClick = menu_algClick
       object menu_linea: TMenuItem
         Caption = 'Linea'
         object opcionDDA: TMenuItem
@@ -1073,10 +1073,29 @@ object proyecto_graf: Tproyecto_graf
           OnClick = opcionBREClick
         end
       end
+      object opcion_polares: TMenuItem
+        Caption = 'Coord. Polares'
+      end
+    end
+    object menu_graficas: TMenuItem
+      Caption = 'Graficas'
+      object opcion_histograma: TMenuItem
+        Caption = 'Histograma'
+      end
+    end
+    object menu_3d: TMenuItem
+      Caption = '3D'
+      object opcion_panel3d: TMenuItem
+        Caption = 'Panel 3D'
+      end
     end
   end
   object dialogo_imagen: TOpenPictureDialog
     Left = 464
+    Top = 384
+  end
+  object cuadro_guardar: TSaveDialog
+    Left = 536
     Top = 384
   end
 end

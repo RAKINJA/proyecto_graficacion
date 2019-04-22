@@ -6,14 +6,15 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  Menus, StdCtrls, ExtDlgs;
+  Menus, StdCtrls, ExtDlgs, propiedad_figura;
 
 type
     Tcoordenada = record // Elemento coordenada para cada figura
       X,Y : integer;
     end;
 
-    figura = record // Crea la estructura para cada figura
+    figura = packed record // Crea la estructura para cada figura
+      nombre      : String;
       tipo        : Integer;
       numero      : integer;
       cantPuntos  : integer;
@@ -40,18 +41,23 @@ type
     boton_reflejo: TToolButton;
     boton_color: TToolButton;
     lista_elementos: TListBox;
+    menu_graficas: TMenuItem;
+    opcion_histograma: TMenuItem;
+    menu_3d: TMenuItem;
+    opcion_panel3d: TMenuItem;
+    opcion_polares: TMenuItem;
     menu_primario: TMainMenu;
     menu_alg: TMenuItem;
     opcion_editable: TMenuItem;
     menu_linea: TMenuItem;
     opcionDDA: TMenuItem;
     opcionBRE: TMenuItem;
-    menu1: TMenuItem;
+    menu_archivo: TMenuItem;
     menu_abrir: TMenuItem;
     opcion_importar: TMenuItem;
     opcion_guardar: TMenuItem;
-    opcion_nuevo: TMenuItem;
     dialogo_imagen: TOpenPictureDialog;
+    cuadro_guardar: TSaveDialog;
     ScrollBox1: TScrollBox;
 
     // Procedimientos Sistema
@@ -66,10 +72,12 @@ type
     procedure graficoMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure boton_colorClick(Sender: TObject);
-    procedure graficoPaint(Sender: TObject);
     procedure lista_elementosClick(Sender: TObject);
+    procedure lista_elementosDblClick(Sender: TObject);
+    procedure menu_algClick(Sender: TObject);
     procedure opcionDDAClick(Sender: TObject);
     procedure opcionBREClick(Sender: TObject);
+    procedure opcion_guardarClick(Sender: TObject);
     procedure opcion_importarClick(Sender: TObject);
 
   private
@@ -96,7 +104,9 @@ type
     procedure graficarCirculo(x1,y1,x2,y2 : integer);                // Circulo
     procedure graficarOctantes(xk, yk, centroX, centroY : integer ); // Octantes Circulo
 
-    procedure graficarElipse(x1,y1,x2,y2,xc,yc : integer);  // Graficar Elipse
+    procedure graficarElipse(xc,yc,x1,y1,x2,y2 : integer);  // Graficar Elipse
+
+    procedure graficarPolilinea(coordenadas : array of TCoordenada; cantCoordenadas: integer);
   end;
 
 var
@@ -108,9 +118,9 @@ var
   contadorFiguras : integer;
   cantidadCoorFigura : integer; // Especifica la cantidad de Pares de Coordenadas X,Y de cada figura
 
-
   valorOpcion: integer; // Variable para saber que boton_reflejo presiono y posteriormente saber cuantos puntos esperar
   contadorClicks: Integer; // contador de clicks para verificar los puntos
+  clicks_polilinea : integer; // variable para controlar los clicks de la polilinea
 
   cX,cY : Integer; {Coordenadas X,Y del mouse}
   pluma : TPen;
@@ -118,6 +128,8 @@ var
   activoDDA : boolean; // True : DDA Algorithm ; False : Bresenham Algorithm (Para linea)
 
   imagen_actual : TPicture;
+  imagen : TBitmap;
+  nombre_imagen : String;
 
 implementation
 
@@ -133,7 +145,7 @@ begin
      contadorFiguras := 0;
      valorOpcion     := 1;
      activoDDA       := true;
-     imagen_actual := nil;//grafico.Picture.Create;
+     imagen_actual   := nil;
 
      // Ancho y alto predefinido del Formulario
      proyecto_graf.Height := 470;
@@ -155,7 +167,7 @@ begin
 end;
 
 {
-    Recepción del Click sobre el Canvas
+    Recepción del Click sobre el Canvas para crear la Figura
 }
 procedure Tproyecto_graf.graficoMouseDown(Sender: TObject; Button: TMouseButton;
     Shift: TShiftState; X, Y: Integer);
@@ -164,27 +176,50 @@ var
     figuraAux : figura;
 
 begin
-     if contadorClicks < cantidadCoorFigura then begin // Guardar la cantidad de Coordenadas Correspondiente a la figura
-        coordenadaAux.X := X;
-        coordenadaAux.Y := Y;
 
-        Setlength(coordenadasAux, contadorClicks+1);
+     if valorOpcion <> 5 then begin
+       if contadorClicks < cantidadCoorFigura then begin // Guardar la cantidad de Coordenadas Correspondiente a la figura
 
-        coordenadasAux[contadorClicks] := coordenadaAux;
+              coordenadaAux.X := X;
+              coordenadaAux.Y := Y;
+              Setlength(coordenadasAux, contadorClicks+1);
 
-        if contadorClicks = cantidadCoorFigura-1 then begin
-           // Reseteo de variables
-           contadorClicks := -1;
+              coordenadasAux[contadorClicks] := coordenadaAux;
 
-           figuraAux := crearFigura( valorOpcion, cantidadCoorFigura ); // Creado de la figura
-           agregarFiguraLista( figuraAux );
-           graficarFigura( figuraAux );
+              if contadorClicks = cantidadCoorFigura-1 then begin
+                 figuraAux := crearFigura( valorOpcion, cantidadCoorFigura ); // Creado de la figura
 
-           contadorFiguras := contadorFiguras + 1;
-        end;
+                 graficarFigura( figuraAux );
+                 agregarFiguraLista( figuraAux );
+                 contadorFiguras := contadorFiguras + 1;
 
+                 // Reseteo de variables
+                 contadorClicks := -1;
+
+              end;
+       end;
+     end else begin
+
+      	  if Button = mbRight then begin
+              // Reseteo de variables
+              contadorClicks := contadorClicks-1;
+              figuraAux := crearFigura( valorOpcion, cantidadCoorFigura ); // Creado de la figura
+
+              graficarFigura( figuraAux );
+              agregarFiguraLista( figuraAux );
+
+              clicks_polilinea := contadorClicks;
+
+              contadorClicks  := -1;
+              contadorFiguras := contadorFiguras + 1;
+          end else begin
+              coordenadaAux.X := X;
+              coordenadaAux.Y := Y;
+
+              Setlength(coordenadasAux, contadorClicks+1);
+              coordenadasAux[contadorClicks] := coordenadaAux;
+          end;
      end;
-
      contadorClicks := contadorClicks+1;
 end;
 
@@ -197,31 +232,30 @@ begin
      begin
          pluma.Color:=cuadrocolor.Color;
      end;
+     contadorClicks := 0;
 end;
 
 {
-    Pinta el grafico escalado
+ 	Procedimiento para seleccionar las figuras y cargar imagen, (si existe)
 }
-procedure Tproyecto_graf.graficoPaint(Sender: TObject);
-begin
-
-     //grafico.Width:= proyecto_graf.Width-130;
-     //grafico.Height:= proyecto_graf.Height-70;
-end;
 
 procedure Tproyecto_graf.lista_elementosClick(Sender: TObject);
 var
     i : integer;
+    color_aux : TColor;
 begin
 
+     color_aux := pluma.Color;
      // limpiar el canvas
      grafico.canvas.Pen.Color:=Clblack;
      grafico.Canvas.Rectangle(0,0,grafico.Width,grafico.Height);
 
      // Verificacion respecto a la existencia de una imagen
-     {if imagen_actual.GetNamePath <> '' then begin
-        //imagen_actual.LoadFromFile( imagen_actual.GetNamePath );
-     end;}
+     if nombre_imagen = '' then begin
+        //showmessage('La imagen no ha sido creada :)');
+     end else begin
+        imagen.LoadFromFile( nombre_imagen);
+     end;
 
      // Recorrer los elementos y repintar
      for i:=0 to contadorFiguras-1 do begin
@@ -232,10 +266,55 @@ begin
             graficarFigura( figurasCreadas[i] );
             continue;
          end else begin
-             grafico.Canvas.Pen.color := figurasCreadas[i].color;
-	     graficarFigura( figurasCreadas[i] );
+            grafico.Canvas.Pen.color := figurasCreadas[i].color;
+	     	graficarFigura( figurasCreadas[i] );
          end;
      end;
+
+     pluma.Color := color_aux;
+end;
+
+{
+ 	Evento doble click de la interfaz que muestra las propiedades de la figura deseada
+}
+procedure Tproyecto_graf.lista_elementosDblClick(Sender: TObject);
+var
+   i: integer;
+   color_aux : TColor;
+begin
+
+     color_aux := pluma.Color;
+     for i:=0 to contadorFiguras-1 do begin
+         if i=lista_elementos.ItemIndex then begin
+            propiedad_figura.panel_propiedades.actualizar_opciones(figurasCreadas[i].nombre, figurasCreadas[i].tipo, figurasCreadas[i].color);
+            break;
+         end;
+     end;
+     propiedad_figura.panel_propiedades.ShowModal;
+
+
+     if( propiedad_figura.panel_propiedades.ModalResult = MrOk ) then begin
+	 	 if propiedad_figura.cambio_nombre then begin
+            figurasCreadas[i].nombre:= propiedad_figura.nuevo_nombre;
+         end;
+
+         if propiedad_figura.cambio_color then begin
+            figurasCreadas[i].color := propiedad_figura.nuevo_color;
+         end;
+
+         for i:=0 to contadorFiguras-1 do begin
+             graficarFigura(figurasCreadas[i]);
+         end;
+
+     end;
+
+     pluma.Color := color_aux;
+
+end;
+
+procedure Tproyecto_graf.menu_algClick(Sender: TObject);
+begin
+
 end;
 
 procedure Tproyecto_graf.opcionDDAClick(Sender: TObject);
@@ -248,20 +327,32 @@ begin
      activoDDA := false;
 end;
 
+procedure Tproyecto_graf.opcion_guardarClick(Sender: TObject);
+var
+   i: integer;
+   //archivo: file of figura;
+begin
+	 if cuadro_guardar.Execute then begin
+        {AssignFile(archivo,cuadro_guardar.FileName);
+        Rewrite(archivo);
+        for i:= 0 to contadorFiguras-1 do begin
+        	Write(archivo,figurasCreadas[i]);
+        end;
+        Closefile(archivo);}
+        ShowMessage('La información ha sido guardada exitosamente');
+     end;
+end;
+
 procedure Tproyecto_graf.opcion_importarClick(Sender: TObject);
 begin
      imagen_actual := grafico.Picture.Create;
+     imagen := TBitmap.Create;
+     imagen := imagen_actual.Bitmap;
 
      if dialogo_imagen.Execute then begin
-        imagen_actual.LoadFromFile(dialogo_imagen.FileName);
-
-        if dialogo_imagen.Width > grafico.Width then begin
-           grafico.width := imagen_actual.Width;
-        end;
-
-        if dialogo_imagen.Height > grafico.Height then begin
-           grafico.Height := imagen_actual.Height;
-        end;
+        nombre_imagen := dialogo_imagen.FileName;
+        imagen.LoadFromFile(dialogo_imagen.FileName);
+        grafico.Canvas.Draw(0,0,imagen);
      end;
 end;
 
@@ -522,14 +613,75 @@ end; // FIN GRAFICAR OCTANTES
 {
  	 Funcion para graficar una elipse
 }
-procedure Tproyecto_graf.graficarElipse(x1,y1,x2,y2,xc,yc : integer);
+procedure Tproyecto_graf.graficarElipse(xc,yc,x1,y1,x2,y2: integer);
+var
+   a, b, x,y : integer;
+   p : double;
+   altura, anchura : integer;
 begin
 
+     altura := round(abs(y2-yc));
+     anchura := round(abs(x1-xc));
+
+     a := anchura;
+     b := altura;
+
+     x := 0;
+     y := b;
+
+     p:=(b*b)-(a*a*b)+(0.25*a*a);
+     // Calculos de la region 1
+     while( (2*(b*b)*x) < (2*(a*a)*y) ) do begin
+          grafico.Canvas.Pixels[x+xc,y+yc]:=pluma.Color;
+          grafico.Canvas.Pixels[xc-x,yc-y]:=pluma.Color;
+          grafico.Canvas.Pixels[xc+x,yc-y]:=pluma.Color;
+          grafico.Canvas.Pixels[xc-x,yc+y]:=pluma.Color;
+
+          x := x+1;
+          if(p>= 0) then begin
+   			 y:=y-1;
+   			 p:=p+2*b*b*x-2*a*a*y+b*b;
+          end else begin
+   			  p:=p+2*b*b*x+b*b;
+          end;
+     end;
+
+     // Calculos de la region 2
+     p:=(b*b*(x+0.5)*(x+0.5))+((y-1)*(y-1)*a*a-a*a*b*b);
+     while y >= 0 do begin
+          grafico.Canvas.Pixels[x+xc,y+yc]:=pluma.Color;
+          grafico.Canvas.Pixels[xc-x,yc-y]:=pluma.Color;
+          grafico.Canvas.Pixels[xc+x,yc-y]:=pluma.Color;
+          grafico.Canvas.Pixels[xc-x,yc+y]:=pluma.Color;
+
+          y := y-1;
+          if(p >= 0) then begin
+			 p:=p-2*a*a*y+a*a;
+          end else begin
+             x:=x+1;
+  			 p:=p-2*a*a*y+2*b*b*x+a*a;
+          end;
+     end;
 end; // FUN GRAFICAR ELIPSE
 
-{  ---------- PROCEDIMIENTOS PARA EL MANEJO DE ESTRUCTURAS --------- }
+procedure Tproyecto_graf.graficarPolilinea(coordenadas : array of TCoordenada; cantCoordenadas: integer);
+var
+   i : integer;
+   arreglo_point : array of TPoint;
+begin
+     // Se convierten las coordenadas a TPoints
+     for i:=0 to clicks_polilinea do begin
+     	 setlength(arreglo_point,i+1);
+         arreglo_point[i].x := coordenadas[i].x;
+         arreglo_point[i].y := coordenadas[i].y;
+     end;
 
+     grafico.Canvas.Polygon(arreglo_point);
+end;
 
+{
+ 	 				 	   	   		 					   ---------- PROCEDIMIENTOS PARA EL MANEJO DE ESTRUCTURAS ---------
+}
 
 { ##### ARREGLO DE FIGURAS CREADAS GLOBALES #####}
 
@@ -541,7 +693,17 @@ var
    figuraAux : figura;
    coorAux : TCoordenada;
    i, tam : integer;
+   nombre : String;
 begin
+
+     case tipo of
+          1: nombre := 'linea';
+          2: nombre := 'rectangulo';
+          3: nombre := 'circulo';
+          4: nombre := 'elipse';
+          5: nombre := 'polilinea';
+     end;
+     figuraAux.nombre := nombre+'_'+inttostr(contadorFiguras);
 
      figuraAux.tipo   := tipo;
      figuraAux.cantPuntos := cantPuntos;
@@ -558,7 +720,15 @@ begin
          figuraAux.Coordenadas[i] := coorAux;
      end;
 
+     if valorOpcion = 5 then begin;
+        for i:=0 to contadorClicks do begin
+            coorAux.X := coordenadasAux[i].X;
+         	coorAux.Y := coordenadasAux[i].Y;
 
+            Setlength(figuraAux.Coordenadas, i+1 );
+		    figuraAux.Coordenadas[i] := coorAux;
+        end;
+     end;
      SetLength(figurasCreadas, contadorFiguras+1 );
      figurasCreadas[contadorFiguras] := figuraAux;
 
@@ -581,11 +751,13 @@ begin
      y2 := figura.Coordenadas[1].Y;
 
      if (x1 = x2) and ( y1 = y2) then begin // Si ambos puntos son iguales se graficara un punto
+         figura.tipo := 1;
          grafico.Canvas.Pixels[x1,y1]:= pluma.Color;
      end else begin                         // Si los puntos no son iguales, se grafica el poligono segun su identificador
          case figura.tipo of
               1: begin // GRAFICACION DE LA LINEA
                   if activoDDA then begin // Si es verdad, se realiza la linea con el algoritmo DDA
+                     figura.tipo:=1;
                      graficarLineaDDA( x1, y1, x2, y2 );
                   end else begin          // Caso Contrario (false) , Se grafica la linea con el algoritmo de Bresenham
                      graficarLineaBresenham (x1, y1, x2, y2);
@@ -595,6 +767,7 @@ begin
 
               2: begin // GRAFICACION DEL RECTANGULO
                   if ( x1 = x2 ) or ( y1 = y2 ) then begin // Si algun punto en horizontal o vertical es lo mismo, se dibuja una linea
+                     figura.tipo:=1;
                      graficarLineaDDA( x1, y1, x2, y2 );
                   end else begin                           // Si no se grafica un rectangulo normal
                      graficarRectangulo(x1, y1, x2, y2 );
@@ -603,30 +776,38 @@ begin
 
               3: begin // GRAFICACION DL CIRCULO
               	 if ( x1 = x2 ) or ( y1 = y2 ) then begin // Si algun punto en horizontal o vertical es lo mismo, se dibuja una linea
+                     figura.tipo:=1;
                      graficarLineaDDA( x1, y1, x2, y2 );
                   end else begin                           // Si no se grafica un circulo normal
                      graficarCirculo(x1, y1, x2, y2 );
                   end; {-- fin circulo --}
               end;
+
+              4 : begin // GRAFICACION ELIPSE
+                 {if (x1 = x2 ) or (y1 = y2) then begin
+                    figura.tipo:=1;
+                    graficarLineaDDA(x1,y1,x2,y2);
+                 end else }
+                    graficarElipse( x1,y2,x2,y2,figura.Coordenadas[2].X, figura.Coordenadas[2].Y);
+                 //end;
+              end;
          end;
      end;
+
+     // Graficado de las demás figuras
+     if figura.tipo = 5 then begin
+        graficarPolilinea(figura.Coordenadas, figura.cantPuntos);
+     end;
+
 end;
 
 {
     Procedimiento para agregar una figura al elemento ListBox
 }
 procedure Tproyecto_graf.agregarFiguraLista( figuraNueva : figura);
-var
-   nombre:String;
+
 begin
-     case figuraNueva.tipo of
-          1: nombre := 'linea';
-          2: nombre := 'rectangulo';
-          3: nombre := 'circulo';
-          4: nombre := 'elipse';
-          5: nombre := 'polilinea';
-     end;
-     lista_elementos.Items.Add(nombre+'_'+inttostr(figuraNueva.numero) );
+     lista_elementos.Items.Add(figuraNueva.nombre );
 end;
 
 end.
