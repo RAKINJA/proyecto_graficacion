@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  Menus, StdCtrls, ExtDlgs, propiedad_figura;
+  Menus, StdCtrls, ExtDlgs, propiedad_figura, codigo_histograma, opcion_colores;
 
 type
     Tcoordenada = record // Elemento coordenada para cada figura
@@ -41,6 +41,7 @@ type
     boton_reflejo: TToolButton;
     boton_color: TToolButton;
     lista_elementos: TListBox;
+    opcion_mandelbrot: TMenuItem;
     menu_graficas: TMenuItem;
     opcion_histograma: TMenuItem;
     menu_3d: TMenuItem;
@@ -78,7 +79,9 @@ type
     procedure opcionDDAClick(Sender: TObject);
     procedure opcionBREClick(Sender: TObject);
     procedure opcion_guardarClick(Sender: TObject);
+    procedure opcion_histogramaClick(Sender: TObject);
     procedure opcion_importarClick(Sender: TObject);
+    procedure opcion_mandelbrotClick(Sender: TObject);
 
   private
 
@@ -107,6 +110,7 @@ type
     procedure graficarElipse(xc,yc,x1,y1,x2,y2 : integer);  // Graficar Elipse
 
     procedure graficarPolilinea(coordenadas : array of TCoordenada; cantCoordenadas: integer);
+
   end;
 
 var
@@ -343,6 +347,11 @@ begin
      end;
 end;
 
+procedure Tproyecto_graf.opcion_histogramaClick(Sender: TObject);
+begin
+	 codigo_histograma.formulario_histograma.ShowModal;
+end;
+
 procedure Tproyecto_graf.opcion_importarClick(Sender: TObject);
 begin
      imagen_actual := grafico.Picture.Create;
@@ -354,6 +363,11 @@ begin
         imagen.LoadFromFile(dialogo_imagen.FileName);
         grafico.Canvas.Draw(0,0,imagen);
      end;
+end;
+
+procedure Tproyecto_graf.opcion_mandelbrotClick(Sender: TObject);
+begin
+
 end;
 
  {  ---------- FUNCIONES DE CAMBIO DE VALOR SEGUN BOTON PULSADO --------- }

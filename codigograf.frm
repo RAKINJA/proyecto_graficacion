@@ -1,12 +1,12 @@
 object proyecto_graf: Tproyecto_graf
-  Left = 364
+  Left = 86
   Height = 449
-  Top = 185
+  Top = 85
   Width = 650
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'proyecto_graf'
-  ClientHeight = 429
+  ClientHeight = 430
   ClientWidth = 650
   Color = 15263976
   Menu = menu_primario
@@ -79,9 +79,9 @@ object proyecto_graf: Tproyecto_graf
   end
   object Label1: TLabel
     Left = 555
-    Height = 15
+    Height = 13
     Top = 40
-    Width = 66
+    Width = 58
     Caption = 'ELEMENTOS'
     ParentColor = False
   end
@@ -1076,11 +1076,16 @@ object proyecto_graf: Tproyecto_graf
       object opcion_polares: TMenuItem
         Caption = 'Coord. Polares'
       end
+      object opcion_mandelbrot: TMenuItem
+        Caption = 'Mandelbrot'
+        OnClick = opcion_mandelbrotClick
+      end
     end
     object menu_graficas: TMenuItem
       Caption = 'Graficas'
       object opcion_histograma: TMenuItem
         Caption = 'Histograma'
+        OnClick = opcion_histogramaClick
       end
     end
     object menu_3d: TMenuItem

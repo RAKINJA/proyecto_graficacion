@@ -4,14 +4,14 @@
     <PathDelim Value="\"/>
     <Version Value="11"/>
     <BuildModes Active="Default"/>
-    <Units Count="8">
+    <Units Count="11">
       <Unit0>
         <Filename Value="proyecto_graficacion.ppr"/>
         <FRMtype Value="0"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="22"/>
-        <UsageCount Value="133"/>
+        <UsageCount Value="134"/>
       </Unit0>
       <Unit1>
         <Filename Value="codigograf.pas"/>
@@ -22,9 +22,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="codigoGraf"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="666"/>
-        <CursorPos X="34" Y="673"/>
-        <UsageCount Value="133"/>
+        <TopLine Value="86"/>
+        <CursorPos X="24" Y="91"/>
+        <UsageCount Value="134"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -35,10 +35,9 @@
         <ComponentName Value="panel_propiedades"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="1"/>
-        <TopLine Value="24"/>
+        <EditorIndex Value="2"/>
         <CursorPos X="45" Y="52"/>
-        <UsageCount Value="40"/>
+        <UsageCount Value="41"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit2>
@@ -83,127 +82,154 @@
         <CursorPos X="11" Y="176"/>
         <UsageCount Value="9"/>
       </Unit7>
+      <Unit8>
+        <Filename Value="codigo_histograma.pas"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="opcion_colores.pas"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="4"/>
+        <CursorPos Y="27"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="opciones_mandelbrot.pas"/>
+        <FRMtype Value="0"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="opciones_man"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="1"/>
+        <CursorPos X="25"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit10>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="198" Column="10" TopLine="163"/>
+        <Caret Line="336" Column="4" TopLine="325"/>
       </Position1>
       <Position2>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="178" Column="67" TopLine="157"/>
+        <Caret Line="725" Column="88" TopLine="708"/>
       </Position2>
       <Position3>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="196" Column="13" TopLine="163"/>
+        <Caret Line="210" Column="13" TopLine="186"/>
       </Position3>
       <Position4>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="71" Column="15" TopLine="51"/>
+        <Caret Line="246" Column="3" TopLine="240"/>
       </Position4>
       <Position5>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="188" Column="32" TopLine="163"/>
+        <Caret Line="195" TopLine="180"/>
       </Position5>
       <Position6>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="185" Column="26" TopLine="164"/>
+        <Caret Line="186" TopLine="176"/>
       </Position6>
       <Position7>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="179" Column="65" TopLine="158"/>
+        <Caret Line="217" TopLine="182"/>
       </Position7>
       <Position8>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="181" Column="39" TopLine="164"/>
+        <Caret Line="218" TopLine="183"/>
       </Position8>
       <Position9>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="203" Column="25" TopLine="186"/>
+        <Caret Line="184" TopLine="176"/>
       </Position9>
       <Position10>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="223" Column="45" TopLine="187"/>
+        <Caret Line="186" TopLine="176"/>
       </Position10>
       <Position11>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="797" Column="40" TopLine="762"/>
+        <Caret Line="190" TopLine="176"/>
       </Position11>
       <Position12>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="209" Column="15" TopLine="196"/>
+        <Caret Line="192" TopLine="176"/>
       </Position12>
       <Position13>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="735" Column="11" TopLine="704"/>
+        <Caret Line="190" Column="2" TopLine="182"/>
       </Position13>
       <Position14>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="733" Column="18" TopLine="713"/>
+        <Caret Line="210" Column="64" TopLine="170"/>
       </Position14>
       <Position15>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="336" Column="4" TopLine="325"/>
+        <Caret Line="804" Column="9" TopLine="780"/>
       </Position15>
       <Position16>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="725" Column="88" TopLine="708"/>
+        <Caret Line="797" Column="35" TopLine="446"/>
       </Position16>
       <Position17>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="210" Column="13" TopLine="186"/>
+        <Caret Line="9" Column="64"/>
       </Position17>
       <Position18>
-        <Filename Value="codigograf.pas"/>
-        <Caret Line="246" Column="3" TopLine="240"/>
+        <Filename Value="opcion_colores.pas"/>
+        <Caret Line="150" TopLine="110"/>
       </Position18>
       <Position19>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="195" TopLine="180"/>
+        <Caret Line="9" Column="80"/>
       </Position19>
       <Position20>
-        <Filename Value="codigograf.pas"/>
-        <Caret Line="186" TopLine="176"/>
+        <Filename Value="codigo_histograma.pas"/>
       </Position20>
       <Position21>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="217" TopLine="182"/>
+        <Caret Line="13" Column="12"/>
       </Position21>
       <Position22>
-        <Filename Value="codigograf.pas"/>
-        <Caret Line="218" TopLine="183"/>
+        <Filename Value="opcion_colores.pas"/>
+        <Caret Line="81" Column="20" TopLine="45"/>
       </Position22>
       <Position23>
-        <Filename Value="codigograf.pas"/>
-        <Caret Line="184" TopLine="176"/>
+        <Filename Value="opcion_colores.pas"/>
+        <Caret Line="26" Column="16" TopLine="7"/>
       </Position23>
       <Position24>
-        <Filename Value="codigograf.pas"/>
-        <Caret Line="186" TopLine="176"/>
+        <Filename Value="opcion_colores.pas"/>
+        <Caret Line="80" Column="20" TopLine="46"/>
       </Position24>
       <Position25>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="190" TopLine="176"/>
+        <Caret Line="27" Column="80"/>
       </Position25>
       <Position26>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="192" TopLine="176"/>
+        <Caret Line="351" Column="53" TopLine="330"/>
       </Position26>
       <Position27>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="190" Column="2" TopLine="182"/>
+        <Caret Line="288" Column="3" TopLine="73"/>
       </Position27>
       <Position28>
         <Filename Value="codigograf.pas"/>
-        <Caret Line="210" Column="64" TopLine="170"/>
+        <Caret Line="91" Column="24" TopLine="86"/>
       </Position28>
       <Position29>
-        <Filename Value="codigograf.pas"/>
-        <Caret Line="804" Column="9" TopLine="780"/>
+        <Filename Value="opciones_mandelbrot.pas"/>
+        <Caret Line="19" Column="18"/>
       </Position29>
       <Position30>
-        <Filename Value="codigograf.pas"/>
-        <Caret Line="797" Column="35" TopLine="446"/>
+        <Filename Value="opciones_mandelbrot.pas"/>
+        <Caret Column="21"/>
       </Position30>
     </JumpHistory>
     <RunParams>

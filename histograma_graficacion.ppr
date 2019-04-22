@@ -1,0 +1,22 @@
+program histograma_graficacion;
+
+{$mode objfpc}{$H+}
+
+uses
+  {$IFDEF UNIX}{$IFDEF UseCThreads}
+  cthreads,
+  {$ENDIF}{$ENDIF}
+  Interfaces, // this includes the adLCL widgetset
+  Forms, codigo_histograma, opcion_colores;
+
+{$R *.res}
+
+begin
+  RequireDerivedFormResource:=True;
+  Application.Scaled:=True;
+  Application.Initialize;
+  Application.CreateForm(Tformulario_histograma, formulario_histograma);
+  Application.CreateForm(TopColores, opColores);
+  Application.Run;
+end.
+
