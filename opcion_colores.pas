@@ -5,7 +5,8 @@ unit opcion_colores;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
+  ExtCtrls;
 
 type
   {TopColores}
@@ -25,6 +26,7 @@ type
     o_: TLabel;
     u_: TLabel;
 
+    //procedure color_aClick(Sender: TObject);
     procedure color_aColorChanged(Sender: TObject);
     procedure color_eColorChanged(Sender: TObject);
     procedure color_iColorChanged(Sender: TObject);
@@ -35,21 +37,19 @@ type
   private
 
   public
-  		colorA , colorE, colorI, colorO, colorU : TColor;
+        colorA , colorE, colorI, colorO, colorU : TColor;
         colora_cambio, colore_cambio, colori_cambio, coloro_cambio, coloru_cambio : boolean;
   end;
 
 var
   opColores: TopColores;
-
-  //colorA , colorE, colorI, colorO, colorU : TColor;
+  colorA , colorE, colorI, colorO, colorU : TColor;
 
 implementation
 
 {$R *.frm}
 
 { TopColores }
-
 procedure TopColores.color_aColorChanged(Sender: TObject);
 begin
      colorA := color_a.ButtonColor;
@@ -64,24 +64,26 @@ end;
 
 procedure TopColores.color_iColorChanged(Sender: TObject);
 begin
-     colorI := color_i.ButtonColor;
+     colorI :=color_i.ButtonColor;
      colori_cambio := true;
 end;
 
 procedure TopColores.color_oColorChanged(Sender: TObject);
 begin
-	 colorO := color_o.ButtonColor;
+     colorO := color_o.ButtonColor;
      coloro_cambio := true;
 end;
 
 procedure TopColores.color_uColorChanged(Sender: TObject);
 begin
-	 colorU := color_u.ButtonColor;
+     colorU := color_u.ButtonColor;
      coloru_cambio := true;
 end;
 
 procedure TopColores.FormCreate(Sender: TObject);
 begin
+     TColorButton.Create(color_a);
+
      colora_cambio := false;
      colore_cambio := false;
      colori_cambio := false;

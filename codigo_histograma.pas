@@ -17,7 +17,7 @@ type
   TBarra = record
   		coordenadas : array [1..2] of TCoordenada;
         color  : TColor;
-        titulo : string;
+        titulo : string[50];
   end;
 
   { Tformulario_histograma }
@@ -38,14 +38,13 @@ type
   private
 
   public
-    	procedure pintarBitmap( canvas_bitmap : TCanvas );
+        procedure crearHistograma(arreglo: array of TBarra; lienzo : TCanvas);
+        procedure pintarBitmap( canvas_bitmap : TCanvas );
+        function asignarCoordenadas(barra: TBarra; lienzo : TCanvas; x,x2 : integer): TBarra;
+        procedure pintarBarras( barra :TBarra; lienzo : TCanvas );
 
-        function asignar_tam_image( imagen : TImage ) : TImage;
-  		procedure crearHistograma(arreglo_barra: array of TBarra; lienzo : TCanvas);
         function crearBarra(identifier : integer): TBarra;
-        procedure asignarCoordenadas(arreglo_barra: array of TBarra; lienzo : TCanvas);
-  		procedure pintarBarras( barra :TBarra; lienzo : TCanvas );
-
+        function asignar_tam_image( imagen : TImage ) : TImage;
   end;
 
 var
@@ -56,16 +55,16 @@ var
   total : integer; // total de valores maximos
   Archivo : Textfile; // variable para el menu_archivo de texto
 
-  imagen : TImage;
+  imagen : TImage; // Imagen a la que se guardará captura
 
   arreglo_barra : array [0..4] of TBarra;
   arreglo_barra_bitmap : array [0..4] of TBarra;
+
 implementation
 
 {$R *.frm}
 
 { Tformulario_histograma }
-
 procedure Tformulario_histograma.FormCreate(Sender: TObject);
 begin
      // Inicializacion de las variables
@@ -99,20 +98,20 @@ var
    imagen : TBitmap;
 begin
      if cuadro_abrir.FileName = '' then begin
-     	showmessage('Seleccione un archivo adecuado');
-	 end else begin
+        showmessage('Seleccione un archivo adecuado');
+     end else begin
 	   imagen := TBitmap.Create;
 
-       try
+        try
      	  imagen.SetSize(grafico.width, grafico.height);
           imagen.Width  :=grafico.Width;
           imagen.height := grafico.Height;
           imagen.Canvas.Rectangle(0,0,grafico.Width, grafico.Height);
           pintarBitmap(imagen.canvas);
           imagen.SaveToFile('histograma.bmp');
-       finally
-       end;
-	 end;
+        finally
+        end;
+     end;
 end;
 
 procedure Tformulario_histograma.pintarBitmap( canvas_bitmap : TCanvas );
@@ -176,7 +175,6 @@ begin
         end;
 
      end; // fin IF cuadro_abrir.Execute
-
 end;
 
 {
@@ -186,48 +184,82 @@ procedure Tformulario_histograma.coloresClick(Sender: TObject);
 var
    i : integer;
 begin
-     opColores.ShowModal;
+     if cuadro_abrir.FileName = '' then begin
+        showmessage('Seleccione un archivo valido');
+     end else begin
+       opColores.ShowModal;
 
-     if opColores.colora_cambio then begin
-        arreglo_barra[0].color := opColores.colorA;
-     end;
-     if opColores.colore_cambio then begin
-        arreglo_barra[1].color := opColores.colorE;
-     end;
-     if opColores.colori_cambio then begin
-        arreglo_barra[2].color := opColores.colorI;
-     end;
-     if opColores.coloro_cambio then begin
-        arreglo_barra[3].color := opColores.colorO;
-     end;
-     if opColores.coloru_cambio then begin
-        arreglo_barra[4].color := opColores.colorU;
-     end;
+       if opColores.ModalResult = MrOk then begin
 
-     if opColores.ModalResult = MrOk then begin
-       for i:=0 to cantidad_barras-1 do begin
-	        pintarBarras(arreglo_barra[i], grafico.canvas);
+          for i:=0 to cantidad_barras-1 do begin
+               if opColores.colora_cambio then begin
+                  arreglo_barra[0].color := opColores.colorA;
+               end;
+               if opColores.colore_cambio then begin
+                  arreglo_barra[1].color := opColores.colorE;
+               end;
+               if opColores.colori_cambio then begin
+                  arreglo_barra[2].color := opColores.colorI;
+               end;
+               if opColores.coloro_cambio then begin
+                  arreglo_barra[3].color := opColores.colorO;
+               end;
+               if opColores.coloru_cambio then begin
+                  arreglo_barra[4].color := opColores.colorU;
+               end;
+	      pintarBarras(arreglo_barra[i], grafico.canvas);
+          end;
        end;
      end;
 end;
 
-{
+{ #########################################################
     Procedimiento para graficar
+  #########################################################
 }
 
-procedure Tformulario_histograma.crearHistograma(arreglo_barra: array of TBarra; lienzo : TCanvas);
+procedure Tformulario_histograma.crearHistograma(arreglo: array of TBarra; lienzo : TCanvas);
 var
-   arreglo_aux : array [0..4] of TBarra;
    i : integer;
 
+   ancho_barra, espacio : integer;
+   x,x2 : integer;
 begin;
-	  // Llamar a la funcion de crearBarras
+      // Llamar a la funcion de crearBarras
       for  i := 0 to cantidad_barras-1 do begin
-      	  arreglo_aux[i] := crearBarra(i);
+      	  arreglo_barra[i] := crearBarra(i);
       end;
 
       // llamar a la funcion de asignarCoordenadas
-      asignarCoordenadas(arreglo_aux, lienzo);
+      x  := 0;
+      x2 := 0;
+
+      ancho_barra := 40;
+      espacio     := 25;
+
+      x  := 100;
+      x2 := 100+ancho_barra;
+
+      lienzo.Brush.Color := Clsilver;
+      lienzo.Rectangle(0,0,lienzo.Width, lienzo.Height);
+
+      for i :=0 to cantidad_barras-1 do begin
+          arreglo_barra[i] := asignarCoordenadas(arreglo_barra[i], lienzo, x, x2);
+
+          x  := x + ancho_barra + espacio;
+          x2 := x2 + espacio + ancho_barra;
+
+          // se guardara el sigueiente elemento como elemento del arreglo para el bitmap
+          arreglo_barra_bitmap[i] := arreglo_barra[i];
+          //arreglo_barra[i] := arreglo_aux[i];
+      end;
+
+      // llamar a la funcion de pintado
+      for i:=0 to cantidad_barras-1 do begin
+          pintarBarras( arreglo_barra[i], lienzo );
+      end;
+
+
 end;
 
 {
@@ -247,15 +279,15 @@ begin
           	end;
           1 : begin
           	auxtitulo := 'E';
-            auxcolor  := Clred;
+                auxcolor  := Clred;
             end;
           2 : begin
-            auxtitulo := 'I';
-            auxcolor  := Clgray;
+                auxtitulo := 'I';
+                auxcolor  := Clgray;
             end;
           3 : begin
-            auxtitulo := 'O';
-            auxcolor := Clblue;
+                auxtitulo := 'O';
+                auxcolor := Clblue;
             end;
           4 :begin
             auxtitulo := 'U';
@@ -263,7 +295,7 @@ begin
             end;
      end;
 
-	 barraAux.color  := auxcolor;
+     barraAux.color  := auxcolor;
      barraAux.titulo := auxtitulo;
 
      crearBarra := barraAux; // Devuelve la barra creada
@@ -272,35 +304,22 @@ end;
 {
  	funcion para asignar coordenadas a las barras
 }
-procedure Tformulario_histograma.asignarCoordenadas(arreglo_barra: array of TBarra; lienzo : TCanvas );
+function Tformulario_histograma.asignarCoordenadas(barra: TBarra; lienzo : TCanvas; x, x2 : integer ): TBarra;
 var
-   i : integer; // variable para recorrer el arreglo de barras
-
-   ancho_barra, espacio, altura, contador : integer;
-
-   x,y,x2,y2 : integer;
+   y, y2, altura : integer;
+   contador : integer;
 begin
-
-     x := 0;
-     y := 0;
-     x2 := 0;
+     y  := 0;
      y2 := 0;
 
-     altura := lienzo.Height-125;
-     ancho_barra := 40;
-     espacio     := 25;
-
-     x  := 100;
-     x2 := 100+ancho_barra;
      y2 := 350;
+     altura := lienzo.Height-125;
 
      lienzo.Brush.Color := Clsilver;
-	 lienzo.Rectangle(0,0,lienzo.Width, lienzo.Height);
+     lienzo.Rectangle(0,0,lienzo.Width, lienzo.Height);
 
-     for i :=0 to cantidad_barras-1 do begin
-
-     	 case arreglo_barra[i].titulo of
-         	  'A' : contador := contador_a;
+       case barra.titulo of
+              'A' : contador := contador_a;
               'E' : contador := contador_e;
               'I' : contador := contador_i;
               'O' : contador := contador_o;
@@ -308,28 +327,20 @@ begin
          end;
 
          if total = 0 then begin // si el total es cero, la altura de la barra sera cero
-     	 	 y := 0;
+     	    y := 0;
          end else begin
-         	 y := round(altura * ( 1-(contador/total) ));
+            y := round(altura * ( 1-(contador/total) ));
          end;
 
      	 // calcular el alto de la barra
-         arreglo_barra[i].coordenadas[1].x :=x;
- 		 arreglo_barra[i].coordenadas[1].y :=y+75;
+         barra.coordenadas[1].x :=x;
+ 	 barra.coordenadas[1].y :=y+75;
 
          // calcular la posicion mas baja de la barra
-         arreglo_barra[i].coordenadas[2].x :=x2;
- 		 arreglo_barra[i].coordenadas[2].y :=y2;
+         barra.coordenadas[2].x :=x2;
+ 	 barra.coordenadas[2].y :=y2;
 
-         x  := x + ancho_barra + espacio;
-         x2 := x2 + espacio + ancho_barra;
-
-         // se guardara el sigueiente elemento como elemento del arreglo para el bitmap
-         arreglo_barra_bitmap[i] := arreglo_barra[i];
-
-         // llamar a la funcion de pintado
-      	 pintarBarras( arreglo_barra[i], lienzo );
-     end;
+     asignarCoordenadas := barra;
 end;
 
 {

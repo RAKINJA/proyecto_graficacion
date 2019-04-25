@@ -1,7 +1,7 @@
 object opColores: TopColores
-  Left = 280
+  Left = 316
   Height = 240
-  Top = 187
+  Top = 174
   Width = 320
   Caption = 'Colores'
   ClientHeight = 240
@@ -56,7 +56,6 @@ object opColores: TopColores
     BorderWidth = 2
     ButtonColorSize = 16
     ButtonColor = clBlack
-    OnClick = color_aClick
     OnColorChanged = color_aColorChanged
   end
   object color_i: TColorButton

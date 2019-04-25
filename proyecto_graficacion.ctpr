@@ -26,12 +26,15 @@
       <FormatVersion Value="2"/>
       <Modes Count="0"/>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="adLCL"/>
+        <PackageName Value="pl_GLScene"/>
       </Item1>
+      <Item2>
+        <PackageName Value="adLCL"/>
+      </Item2>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="7">
       <Unit0>
         <Filename Value="proyecto_graficacion.ppr"/>
         <FRMtype Value="0"/>
@@ -39,7 +42,7 @@
       </Unit0>
       <Unit1>
         <Filename Value="codigograf.pas"/>
-        <FRMtype Value="0"/>
+        <FRMtype Value="200"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="proyecto_graf"/>
         <HasResources Value="True"/>
@@ -48,7 +51,7 @@
       </Unit1>
       <Unit2>
         <Filename Value="propiedad_figura.pas"/>
-        <FRMtype Value="0"/>
+        <FRMtype Value="200"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="panel_propiedades"/>
         <HasResources Value="True"/>
@@ -56,12 +59,34 @@
       </Unit2>
       <Unit3>
         <Filename Value="opciones_mandelbrot.pas"/>
-        <FRMtype Value="0"/>
+        <FRMtype Value="200"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="opciones_man"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="opciones_mandel"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="codigo_histograma.pas"/>
+        <FRMtype Value="200"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formulario_histograma"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="opcion_colores.pas"/>
+        <FRMtype Value="200"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="panel_3d.pas"/>
+        <FRMtype Value="200"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formulario_3d"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

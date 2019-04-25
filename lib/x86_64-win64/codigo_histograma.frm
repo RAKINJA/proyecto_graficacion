@@ -1,13 +1,16 @@
 object formulario_histograma: Tformulario_histograma
-  Left = 86
+  Left = 557
   Height = 104
-  Top = 85
+  Top = 244
   Width = 159
+  BorderStyle = bsToolWindow
   Caption = 'Histograma'
   ClientHeight = 84
   ClientWidth = 159
+  DoubleBuffered = False
   Menu = menu_principal
   OnCreate = FormCreate
+  ParentDoubleBuffered = False
   LCLVersion = '6.7'
   object grafico: TImage
     Left = 8

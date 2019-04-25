@@ -1,7 +1,7 @@
 object panel_propiedades: Tpanel_propiedades
-  Left = 364
+  Left = 323
   Height = 203
-  Top = 185
+  Top = 180
   Width = 185
   Caption = 'Propiedades'
   ClientHeight = 203

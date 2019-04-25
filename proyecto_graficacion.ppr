@@ -7,8 +7,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the adLCL widgetset
-  Forms, codigoGraf, propiedad_figura, opciones_mandelbrot
-  { you can add units after this };
+  Forms, codigoGraf, propiedad_figura, opciones_mandelbrot, codigo_histograma,
+  opcion_colores, panel_3d;
 
 {$R *.res}
 
@@ -16,9 +16,12 @@ begin
   RequireDerivedFormResource:=True;
   Application.Scaled:=True;
   Application.Initialize;
-	    Application.CreateForm(Tproyecto_graf, proyecto_graf);
+  Application.CreateForm(Tproyecto_graf, proyecto_graf);
   Application.CreateForm(Tpanel_propiedades, panel_propiedades);
   Application.CreateForm(Topciones_man, opciones_man);
+  Application.CreateForm(Tformulario_histograma, formulario_histograma);
+  Application.CreateForm(TopColores, opColores);
+  Application.CreateForm(Tformulario_3d, formulario_3d);
   Application.Run;
 end.
 

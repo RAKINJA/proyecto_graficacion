@@ -6,22 +6,16 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  Menus, StdCtrls, ExtDlgs, propiedad_figura, codigo_histograma, opcion_colores;
+  Menus, StdCtrls, ExtDlgs, propiedad_figura, codigo_histograma, panel_3d;
 
 type
-    Tcoordenada = record // Elemento coordenada para cada figura
-      X,Y : integer;
-    end;
-
     figura = packed record // Crea la estructura para cada figura
-      nombre      : String;
+      nombre      : String[50];
       tipo        : Integer;
       numero      : integer;
       cantPuntos  : integer;
-      Coordenadas : array of Tcoordenada;
-
+      Coordenadas : array[0..49] of TPoint;
       color: Tcolor;
-
       estado : boolean;
     end;
 
@@ -38,8 +32,8 @@ type
     boton_circulo: TToolButton;
     boton_elipse: TToolButton;
     boton_polilinea: TToolButton;
+    boton_bezier: TToolButton;
     boton_reflejo: TToolButton;
-    boton_color: TToolButton;
     lista_elementos: TListBox;
     opcion_mandelbrot: TMenuItem;
     menu_graficas: TMenuItem;
@@ -59,37 +53,39 @@ type
     opcion_guardar: TMenuItem;
     dialogo_imagen: TOpenPictureDialog;
     cuadro_guardar: TSaveDialog;
+    cuadro_abrir: TOpenDialog;
     ScrollBox1: TScrollBox;
+    boton_color: TToolButton;
 
     // Procedimientos Sistema
 
     procedure boton_circuloClick(Sender: TObject);
+    procedure boton_colorClick(Sender: TObject);
     procedure boton_cuadradoClick(Sender: TObject);
     procedure boton_lineaClick(Sender: TObject);
     procedure boton_elipseClick(Sender: TObject);
     procedure boton_polilineaClick(Sender: TObject);
-    procedure boton_reflejoClick(Sender: TObject);
+    procedure boton_bezierClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure graficoMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure boton_colorClick(Sender: TObject);
+    procedure boton_reflejoClick(Sender: TObject);
     procedure lista_elementosClick(Sender: TObject);
     procedure lista_elementosDblClick(Sender: TObject);
     procedure menu_algClick(Sender: TObject);
     procedure opcionDDAClick(Sender: TObject);
     procedure opcionBREClick(Sender: TObject);
+    procedure opcion_editableClick(Sender: TObject);
     procedure opcion_guardarClick(Sender: TObject);
     procedure opcion_histogramaClick(Sender: TObject);
     procedure opcion_importarClick(Sender: TObject);
     procedure opcion_mandelbrotClick(Sender: TObject);
+    procedure opcion_panel3dClick(Sender: TObject);
 
   private
 
   public
-
-    {
-        Funciones para Estructuras
-    }
+    // Funciones para Estructuras
     function crearFigura( tipo, cantPuntos : integer ): figura;
 
     {
@@ -97,6 +93,9 @@ type
     }
     procedure graficarFigura(  figura : figura  );
     procedure agregarFiguraLista( figuraNueva : figura);
+
+    procedure limpiarCanvas();
+
 
     // Procedimientos para Figuras
     procedure graficarLineaDDA (x1,y1,x2,y2 : integer);       // Linea DDA
@@ -109,7 +108,8 @@ type
 
     procedure graficarElipse(xc,yc,x1,y1,x2,y2 : integer);  // Graficar Elipse
 
-    procedure graficarPolilinea(coordenadas : array of TCoordenada; cantCoordenadas: integer);
+    procedure graficarPolilinea(coordenadas : array of TPoint);
+    procedure graficarBezier(coordenadas: array of TPoint);
 
   end;
 
@@ -118,13 +118,13 @@ var
 
   figurasCreadas  : array of figura; // Arreglo General de figuras creadas
 
-  coordenadasAux : array of TCoordenada; // Arreglo auxiliar de coordenadas para su reconocimiento
+  coordenadasAux : array[0..49] of TPoint; // Arreglo auxiliar de coordenadas para su reconocimiento
   contadorFiguras : integer;
   cantidadCoorFigura : integer; // Especifica la cantidad de Pares de Coordenadas X,Y de cada figura
 
-  valorOpcion: integer; // Variable para saber que boton_reflejo presiono y posteriormente saber cuantos puntos esperar
+  valorOpcion: integer; // Variable para saber que boton_bezier presiono y posteriormente saber cuantos puntos esperar
   contadorClicks: Integer; // contador de clicks para verificar los puntos
-  clicks_polilinea : integer; // variable para controlar los clicks de la polilinea
+  clicks_libre : integer; // variable para controlar los clicks de la polilinea
 
   cX,cY : Integer; {Coordenadas X,Y del mouse}
   pluma : TPen;
@@ -176,17 +176,16 @@ end;
 procedure Tproyecto_graf.graficoMouseDown(Sender: TObject; Button: TMouseButton;
     Shift: TShiftState; X, Y: Integer);
 var
-    coordenadaAux : TCoordenada;
+    coordenadaAux : TPoint;
     figuraAux : figura;
 
 begin
 
-     if valorOpcion <> 5 then begin
+     if (valorOpcion <> 5) and (valorOpcion <> 6) then begin
        if contadorClicks < cantidadCoorFigura then begin // Guardar la cantidad de Coordenadas Correspondiente a la figura
 
               coordenadaAux.X := X;
               coordenadaAux.Y := Y;
-              Setlength(coordenadasAux, contadorClicks+1);
 
               coordenadasAux[contadorClicks] := coordenadaAux;
 
@@ -206,13 +205,14 @@ begin
 
       	  if Button = mbRight then begin
               // Reseteo de variables
-              contadorClicks := contadorClicks-1;
+              contadorClicks := contadorClicks-1; // se reduce el contador, ya que cuenta el clic derecho, si una figura tiene 4 puntos, en total se registran 5 clics -1 = 4
+
               figuraAux := crearFigura( valorOpcion, cantidadCoorFigura ); // Creado de la figura
 
               graficarFigura( figuraAux );
               agregarFiguraLista( figuraAux );
 
-              clicks_polilinea := contadorClicks;
+              clicks_libre := contadorClicks;
 
               contadorClicks  := -1;
               contadorFiguras := contadorFiguras + 1;
@@ -220,7 +220,6 @@ begin
               coordenadaAux.X := X;
               coordenadaAux.Y := Y;
 
-              Setlength(coordenadasAux, contadorClicks+1);
               coordenadasAux[contadorClicks] := coordenadaAux;
           end;
      end;
@@ -230,13 +229,9 @@ end;
 {
    Inicia el procedimiento de cambio de color de la pluma para pintar en el Canvas
 }
-procedure Tproyecto_graf.boton_colorClick(Sender: TObject);
+procedure Tproyecto_graf.boton_reflejoClick(Sender: TObject);
 begin
-     if(cuadrocolor.Execute) then
-     begin
-         pluma.Color:=cuadrocolor.Color;
-     end;
-     contadorClicks := 0;
+     // se iniciaran los procedimientos de transformacion
 end;
 
 {
@@ -248,7 +243,6 @@ var
     i : integer;
     color_aux : TColor;
 begin
-
      color_aux := pluma.Color;
      // limpiar el canvas
      grafico.canvas.Pen.Color:=Clblack;
@@ -274,7 +268,6 @@ begin
 	     	graficarFigura( figurasCreadas[i] );
          end;
      end;
-
      pluma.Color := color_aux;
 end;
 
@@ -331,18 +324,70 @@ begin
      activoDDA := false;
 end;
 
+{
+ 	Abre un documento Editable
+}
+procedure Tproyecto_graf.opcion_editableClick(Sender: TObject);
+var
+   archivo: file of figura;
+   forma_aux : figura;
+begin
+	 if cuadro_abrir.Execute then begin
+     	AssignFile(archivo,cuadro_abrir.FileName);
+        {$I-}
+        Reset(archivo);
+        {$I+}
+
+        if IOResult = 0 then begin
+           limpiarCanvas();// limpiar
+
+           lista_elementos.Clear;
+           while not EOF(archivo) do begin
+               Read(archivo,forma_aux);
+
+               // recimension del arreglo de figuras
+               contadorFiguras := 0;
+               setlength(figurasCreadas, contadorFiguras+1 );
+               figurasCreadas[contadorFiguras] := forma_aux;
+
+               // graficar la figura
+               graficarFigura(forma_aux);
+
+               // agregar figura a la lista
+               agregarFiguraLista(forma_aux);
+
+               inc(contadorFiguras);
+           end;
+
+           closefile(archivo);
+           pluma.Color:=Clblack;
+        end;
+     end;
+
+end;
+
+{
+ 	Procedimiento para limpiar el canvas
+}
+procedure Tproyecto_graf.limpiarCanvas();
+begin
+     pluma.color := Clblack;
+	 grafico.Canvas.Rectangle(0,0,grafico.Width,grafico.Height);
+end;
+
+
 procedure Tproyecto_graf.opcion_guardarClick(Sender: TObject);
 var
    i: integer;
-   //archivo: file of figura;
+   archivo: file of figura;
 begin
 	 if cuadro_guardar.Execute then begin
-        {AssignFile(archivo,cuadro_guardar.FileName);
+        AssignFile(archivo,cuadro_guardar.FileName);
         Rewrite(archivo);
         for i:= 0 to contadorFiguras-1 do begin
         	Write(archivo,figurasCreadas[i]);
         end;
-        Closefile(archivo);}
+        Closefile(archivo);
         ShowMessage('La información ha sido guardada exitosamente');
      end;
 end;
@@ -368,6 +413,11 @@ end;
 procedure Tproyecto_graf.opcion_mandelbrotClick(Sender: TObject);
 begin
 
+end;
+
+procedure Tproyecto_graf.opcion_panel3dClick(Sender: TObject);
+begin
+ 	 panel_3d.formulario_3d.ShowModal;
 end;
 
  {  ---------- FUNCIONES DE CAMBIO DE VALOR SEGUN BOTON PULSADO --------- }
@@ -396,6 +446,13 @@ begin
      cantidadCoorFigura := 2;
 end;
 
+procedure Tproyecto_graf.boton_colorClick(Sender: TObject);
+begin
+	 if cuadrocolor.Execute then begin
+        pluma.Color:=cuadrocolor.Color;
+     end;
+end;
+
 procedure Tproyecto_graf.boton_elipseClick(Sender: TObject);
 begin
      valorOpcion := 4;
@@ -410,7 +467,7 @@ begin
      contadorClicks := 0;
 end;
 
-procedure Tproyecto_graf.boton_reflejoClick(Sender: TObject);
+procedure Tproyecto_graf.boton_bezierClick(Sender: TObject);
 begin
      valorOpcion    := 6;
      contadorClicks := 0;
@@ -678,19 +735,30 @@ begin
      end;
 end; // FUN GRAFICAR ELIPSE
 
-procedure Tproyecto_graf.graficarPolilinea(coordenadas : array of TCoordenada; cantCoordenadas: integer);
+procedure Tproyecto_graf.graficarPolilinea(coordenadas : array of TPoint);
 var
    i : integer;
-   arreglo_point : array of TPoint;
+   arreglo_aux : array of TPoint;
 begin
-     // Se convierten las coordenadas a TPoints
-     for i:=0 to clicks_polilinea do begin
-     	 setlength(arreglo_point,i+1);
-         arreglo_point[i].x := coordenadas[i].x;
-         arreglo_point[i].y := coordenadas[i].y;
+	 // lenaer el arreglo auxiliar
+     for i:=0 to clicks_libre do begin
+         setlength(arreglo_aux,i+1);
+         arreglo_aux[i]:=coordenadas[i];
      end;
+     grafico.Canvas.Polygon(arreglo_aux);
+end;
 
-     grafico.Canvas.Polygon(arreglo_point);
+procedure Tproyecto_graf.graficarBezier(coordenadas: array of TPoint);
+var
+   i : integer;
+   arreglo_aux : array of TPoint;
+begin
+     // lenaer el arreglo auxiliar
+     for i:=0 to clicks_libre do begin
+         setlength(arreglo_aux,i+1);
+         arreglo_aux[i]:=coordenadas[i];
+     end;
+     grafico.Canvas.PolyBezier(arreglo_aux,false,false);
 end;
 
 {
@@ -705,7 +773,7 @@ end;
 function Tproyecto_graf.crearFigura( tipo, cantPuntos : integer ): figura;
 var
    figuraAux : figura;
-   coorAux : TCoordenada;
+   coorAux : TPoint;
    i, tam : integer;
    nombre : String;
 begin
@@ -716,6 +784,7 @@ begin
           3: nombre := 'circulo';
           4: nombre := 'elipse';
           5: nombre := 'polilinea';
+          6: nombre := 'bezier';
      end;
      figuraAux.nombre := nombre+'_'+inttostr(contadorFiguras);
 
@@ -726,22 +795,11 @@ begin
      figuraAux.estado := true;
 
      // Copiar Coordenadas
-     for i:=0 to cantPuntos-1 do begin
+     for i:=0 to contadorClicks do begin
          coorAux.X := coordenadasAux[i].X;
          coorAux.Y := coordenadasAux[i].Y;
 
-         Setlength(figuraAux.Coordenadas, i+1 );
          figuraAux.Coordenadas[i] := coorAux;
-     end;
-
-     if valorOpcion = 5 then begin;
-        for i:=0 to contadorClicks do begin
-            coorAux.X := coordenadasAux[i].X;
-         	coorAux.Y := coordenadasAux[i].Y;
-
-            Setlength(figuraAux.Coordenadas, i+1 );
-		    figuraAux.Coordenadas[i] := coorAux;
-        end;
      end;
      SetLength(figurasCreadas, contadorFiguras+1 );
      figurasCreadas[contadorFiguras] := figuraAux;
@@ -809,8 +867,13 @@ begin
      end;
 
      // Graficado de las demás figuras
-     if figura.tipo = 5 then begin
-        graficarPolilinea(figura.Coordenadas, figura.cantPuntos);
+     case figura.tipo of
+     	 5: begin
+            graficarPolilinea(figura.Coordenadas);
+         end;
+         6: begin
+            graficarBezier(figura.Coordenadas);
+         end;
      end;
 
 end;
