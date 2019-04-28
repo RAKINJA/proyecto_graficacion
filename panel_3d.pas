@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, GLScene,
   GLCadencer, GLBehaviours, GLMaterial, GLSkydome, GLShadowVolume, GLExtrusion,
-  GLViewer, GLObjects, GLPolyhedron, Types, GLBaseClasses;
+  GLWaterPlane, GLViewer, GLObjects, GLPolyhedron, Types, GLBaseClasses,
+  GLGeomObjects;
 
 type
 
@@ -16,11 +17,25 @@ type
   Tformulario_3d = class(TForm)
     cadencer: TGLCadencer;
     camara: TGLCamera;
-    cubo1: TGLCube;
+    edificio1: TGLCube;
+    edicio1_container: TGLDummyCube;
+    edificio2_container: TGLDummyCube;
+    edificio2: TGLCube;
+    escalon1: TGLCube;
+    escalon2: TGLCube;
+    escalon3: TGLCube;
+    escalon4: TGLCube;
+    escalon5: TGLCube;
+    escalon6: TGLCube;
+    escalon7: TGLCube;
+    escalon8: TGLCube;
+    agua: TGLPlane;
+    GLWaterPlane1: TGLWaterPlane;
+    molino: TGLTorus;
+    molino_agua: TGLDummyCube;
+    edificio2_techo: TGLFrustrum;
+    techo_edificio1: TGLFrustrum;
     luz: TGLLightSource;
-    icosaedro3: TGLIcosahedron;
-    icosaedro2: TGLIcosahedron;
-    icosaedro: TGLIcosahedron;
     guia: TGLDummyCube;
     domo: TGLEarthSkyDome;
     material: TGLMaterialLibrary;
@@ -31,15 +46,13 @@ type
     reloj: TTimer;
     procedure cadencerProgress(Sender: TObject; const deltaTime, newTime: Double
       );
-    procedure FormCreate(Sender: TObject);
-    procedure icosaedro2Progress(Sender: TObject; const deltaTime,
-      newTime: Double);
     procedure mostradorMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure mostradorMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure mostradorMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure relojTimer(Sender: TObject);
   private
 
   public
@@ -64,6 +77,12 @@ begin
      camara.FocalLength:=camara.FocalLength+WheelDelta / 25;
 end;
 
+procedure Tformulario_3d.relojTimer(Sender: TObject);
+begin
+     //reloj.Interval:=2000;
+     //molino_agua.RollAngle:=360;
+end;
+
 procedure Tformulario_3d.mostradorMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
@@ -72,25 +91,12 @@ begin
   rotacionY := Y;
 end;
 
-procedure Tformulario_3d.FormCreate(Sender: TObject);
-begin
-	 //icosaedro.Move(0.2);
-end;
-
-procedure Tformulario_3d.icosaedro2Progress(Sender: TObject; const deltaTime,
-  newTime: Double);
-begin
-     icosaedro.Move(0.0002);
-end;
-
 procedure Tformulario_3d.cadencerProgress(Sender: TObject; const deltaTime,
   newTime: Double);
 begin
-     cubo1.TurnAngle:=newTime*5;
-
-     icosaedro2.Position.X:= 0.5;
-     icosaedro2.Position.Y:= 0.00000000001;
+     molino_agua.RollAngle:=molino_agua.RollAngle+0.1;
 end;
+
 
 procedure Tformulario_3d.mostradorMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
